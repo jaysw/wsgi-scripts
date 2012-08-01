@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Serve up a WSGI application with tornado"""
 
 import argparse
@@ -72,8 +73,7 @@ def main(argv=None):
     if args.ssl:
         log.info('Using SSL keyfile:%(keyfile)s certfile:%(certfile)s' % args.ssl_options)
     http_server = HTTPServer(WSGIContainer(import_app(args.appmodule)), ssl_options=args.ssl_options)
-    log.info("Starting HTTP%s server on port: %i" % ('S' if args.ssl else '', args.port))
-    
+    log.info("Starting HTTP%s server on port: %i" % ('S' if args.ssl else '', args.port)) 
     http_server.listen(args.port)
     if args.group:
         chgrp(args.group)
