@@ -11,5 +11,5 @@ setup(
     include_package_data=True,
     zip_safe=False,
     scripts=['scripts/tornado-run', 'scripts/flask-run'],
-    install_requires=['tornado']
+    install_requires=['tornado', 'termcolor']
 )

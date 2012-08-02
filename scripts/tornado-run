@@ -2,8 +2,11 @@
 """Serve up a WSGI application with tornado"""
 
 import argparse
+import inspect
+import signal
 import sys
 import os
+from termcolor import colored
 from os import path
 from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
@@ -12,6 +15,8 @@ import tornado.options
 import logging
 
 log = logging.getLogger()
+DEBUG = False
+_default_log_level = logging.INFO
 
 CERTPATH = path.join(path.expanduser('~jsweeney'), 'certificates')
 default_ssl_options = {
@@ -60,7 +65,34 @@ def chuser(user):
         raise KeyError('%s not a valid user' % user)
     os.setuid(uid)
 
+def unset_debug():
+    log.setLevel(_default_log_level)
+
+def set_debug():
+    log.setLevel(logging.DEBUG)
+
+def printsource(frame):
+    try:
+        tb =  inspect.getframeinfo(frame, context=5)
+        for n, line in enumerate(tb.code_context):
+            line = colored(line, 'green') if n == tb.index else line
+            sys.stdout.write(line)
+    except:
+        sys.warning("Cound't print source code")
+
+def debug_signal(sig, frame):
+    global DEBUG
+    log.info("DEBUG Mode %s", 'off' if DEBUG else 'on')
+    printsource(frame) 
+    if DEBUG:
+        unset_debug()
+    else:
+        set_debug()
+    DEBUG = not DEBUG
+
+
 def main(argv=None):
+    global _default_log_level
     if argv is None:
         argv = sys.argv[1:]
     args = parseargs(argv)
@@ -72,9 +104,11 @@ def main(argv=None):
         log.setLevel(numeric_level)
     if args.ssl:
         log.info('Using SSL keyfile:%(keyfile)s certfile:%(certfile)s' % args.ssl_options)
+    _default_log_level = log.level
     http_server = HTTPServer(WSGIContainer(import_app(args.appmodule)), ssl_options=args.ssl_options)
     log.info("Starting HTTP%s server on port: %i" % ('S' if args.ssl else '', args.port)) 
     http_server.listen(args.port)
+    signal.signal(signal.SIGUSR1, debug_signal)
     if args.group:
         chgrp(args.group)
     if args.user: 
