@@ -34,12 +34,13 @@ def main(argv=None):
         argv = sys.argv[1:]
     args = parseargs(argv)
     app = import_app(args.appmodule)
-    app.run(host=args.host, port=args.port)
+    app.run(host=args.host, port=args.port, debug=args.debug)
 
 def parseargs(args):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--host', action='store', dest='host', help='Bind to this host. 0.0.0.0 for all', default='127.0.0.1')
     parser.add_argument('--port', '-p', action='store', dest='port', help='Bind to this port', type=int, default=5000)
+    parser.add_argument('--debug', action='store', help='Enable flask debugger', default=True)
     parser.add_argument('appmodule', action='store', metavar='MODULE:OBJ', help='module and wsgi app in format - module:obj')
     args = parser.parse_args(args=args)
     return args

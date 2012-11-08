@@ -78,7 +78,7 @@ def printsource(frame):
             line = colored(line, 'green') if n == tb.index else line
             sys.stdout.write(line)
     except:
-        sys.warning("Cound't print source code")
+        log.warning("Cound't print source code")
 
 def debug_signal(sig, frame):
     global DEBUG
@@ -106,7 +106,7 @@ def main(argv=None):
         log.info('Using SSL keyfile:%(keyfile)s certfile:%(certfile)s' % args.ssl_options)
     _default_log_level = log.level
     http_server = HTTPServer(WSGIContainer(import_app(args.appmodule)), ssl_options=args.ssl_options)
-    log.info("Starting HTTP%s server on port: %i" % ('S' if args.ssl else '', args.port)) 
+    log.info("Starting HTTP%s server on: %s:%i" % ('S' if args.ssl else '', args.host, args.port)) 
     http_server.listen(args.port)
     signal.signal(signal.SIGUSR1, debug_signal)
     if args.group:
@@ -120,6 +120,7 @@ def parseargs(args):
     parser.add_argument('--ssl', '-s', action='store_true', dest='ssl', help='use SSL')
     parser.add_argument('--cert', '-c', action='store', dest='certfile', help='SSL certificate', type=argparse.FileType('rt'))
     parser.add_argument('--key', '-k', action='store', dest='keyfile', help='SSL private key', type=argparse.FileType('rt'))
+    parser.add_argument('--host', action='store', dest='host', help='Bind to this host. 0.0.0.0 for all', default='0.0.0.0')
     parser.add_argument('--port', '-p', action='store', dest='port', help='Bind to this port', type=int, default=5555)
     parser.add_argument('--user', '-u', action='store', dest='user', help='Run as this user (setuid)')
     parser.add_argument('--group', '-g', action='store', dest='group', help='Run as this group (setgid)')
