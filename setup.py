@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='WsgiScripts',
-    version='0.0.4',
+    version='0.0.5',
     description="helpers for wrapping and running wsgi apps",
     author='Jay Sweeney',
     author_email='jay.sweeney@wotifgroup.com',
