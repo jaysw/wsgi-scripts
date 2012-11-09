@@ -6,7 +6,7 @@ import sys
 import os
 
 def import_app(module):
-    """Stolen shamelessly from gunicorn's apploader"""
+    """Shamelessly stolen from gunicorn's apploader"""
     parts = module.split(":", 1)
     if len(parts) == 1:
         module, obj = module, "application"
@@ -40,7 +40,7 @@ def parseargs(args):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--host', action='store', dest='host', help='Bind to this host. 0.0.0.0 for all', default='127.0.0.1')
     parser.add_argument('--port', '-p', action='store', dest='port', help='Bind to this port', type=int, default=5000)
-    parser.add_argument('--debug', action='store', help='Enable flask debugger', default=True)
+    parser.add_argument('--debug', action='store_true', help='Enable flask debugger', default=True)
     parser.add_argument('appmodule', action='store', metavar='MODULE:OBJ', help='module and wsgi app in format - module:obj')
     args = parser.parse_args(args=args)
     return args
