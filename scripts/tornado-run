@@ -18,17 +18,17 @@ log = logging.getLogger()
 DEBUG = False
 _default_log_level = logging.INFO
 
-CERTPATH = path.join(path.expanduser('~jsweeney'), 'certificates')
+CERTPATH = path.join(path.expanduser('~'), 'certificates')
 default_ssl_options = {
-    'certfile': path.join(CERTPATH, 'jsweeney.crt'),
-    'keyfile' : path.join(CERTPATH, 'jsweeney.key')
+    'certfile': path.join(CERTPATH, 'app.crt'),
+    'keyfile' : path.join(CERTPATH, 'app.key')
 }
 
 def import_app(module):
     """Stolen shamelessly from gunicorn's apploader"""
     parts = module.split(":", 1)
     if len(parts) == 1:
-        module, obj = module, "application"
+        module, obj = module, "app"
     else:
         module, obj = parts[0], parts[1]
 
