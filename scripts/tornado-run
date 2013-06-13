@@ -83,7 +83,7 @@ def printsource(frame):
 def debug_signal(sig, frame):
     global DEBUG
     log.info("DEBUG Mode %s", 'off' if DEBUG else 'on')
-    printsource(frame) 
+    printsource(frame)
     if DEBUG:
         unset_debug()
     else:
@@ -106,12 +106,12 @@ def main(argv=None):
         log.info('Using SSL keyfile:%(keyfile)s certfile:%(certfile)s' % args.ssl_options)
     _default_log_level = log.level
     http_server = HTTPServer(WSGIContainer(import_app(args.appmodule)), ssl_options=args.ssl_options)
-    log.info("Starting HTTP%s server on: %s:%i" % ('S' if args.ssl else '', args.host, args.port)) 
-    http_server.listen(args.port)
+    log.info("Starting HTTP%s server on: %s:%i" % ('S' if args.ssl else '', args.host, args.port))
+    http_server.listen(args.port, address=args.host)
     signal.signal(signal.SIGUSR1, debug_signal)
     if args.group:
         chgrp(args.group)
-    if args.user: 
+    if args.user:
         chuser(args.user)
     IOLoop.instance().start()
 
